@@ -50,12 +50,6 @@
       font-size: 18px;
       color: #2e7d32;
     }
-    #تایمر {
-      margin-top: 10px;
-      font-size: 18px;
-      color: #c62828;
-      font-weight: bold;
-    }
     @keyframes shake {
       0% { transform: translateX(0); }
       25% { transform: translateX(-10px); }
@@ -72,7 +66,6 @@
   <h1>🎮 بازی حدس عدد</h1>
   <div id="امتیاز">امتیاز: ۰</div>
   <div id="سطح">سطح: ۱</div>
-  <div id="تایمر">⏱️ زمان: ۳۰</div>
   <p id="راهنما">یه عدد بین ۱ تا ۱۰ حدس بزن:</p>
   <input type="number" id="حدس" min="1" max="10">
   <button onclick="بررسی()">حدس بزن!</button>
@@ -82,9 +75,8 @@
   <script>
     let تعدادتلاش = 0;
     let سطح = 1;
-    let زمان = 30;
-    let تایمر;
 
+    // خواندن امتیاز و سطح از حافظه مرورگر
     let امتیاز = Number(localStorage.getItem("امتیاز")) || 0;
     let سطحذخیره = Number(localStorage.getItem("سطح")) || 1;
 
@@ -119,47 +111,10 @@
       }, 300);
     }
 
-    function شروع تایمر() {
-      زمان = 30;
-      document.getElementById("تایمر").innerHTML = "⏱️ زمان: " + زمان;
-      document.getElementById("حدس").disabled = false;
-
-      clearInterval(تایمر);
-      تایمر = setInterval(function() {
-        زمان = زمان - 1;
-        document.getElementById("تایمر").innerHTML = "⏱️ زمان: " + زمان;
-
-        if (زمان <= 0) {
-          clearInterval(تایمر);
-          پایان وقت();
-        }
-      }, 1000);
-    }
-
-    function پایان وقت() {
-      document.getElementById("نتیجه").innerHTML = "⏰ وقت تموم شد! عدد درست " + عدددرست + " بود.";
-      document.getElementById("حدس").disabled = true;
-      پخشصدا(150, 0.5);
-      بلرزون();
-
-      setTimeout(function() {
-        // شروع دوباره بعد از ۳ ثانیه
-        عدددرست = Math.floor(Math.random() * سقف) + 1;
-        تعدادتلاش = 0;
-        document.getElementById("نتیجه").innerHTML = "بازی جدید شروع شد! یه عدد دیگه حدس بزن.";
-        شروع تایمر();
-      }, 3000);
-    }
-
     function بررسی() {
       let حدسکاربر = document.getElementById("حدس").value;
       let نتیجه = document.getElementById("نتیجه");
       let تلاش = document.getElementById("تلاش");
-
-      if (حدسکاربر === "") {
-        نتیجه.innerHTML = "لطفاً یه عدد وارد کن.";
-        return;
-      }
 
       تعدادتلاش = تعدادتلاش + 1;
 
@@ -186,9 +141,11 @@
         setTimeout(() => پخشصدا(659, 0.15), 150);
         setTimeout(() => پخشصدا(784, 0.3), 300);
 
+        // سطح بالا می‌ره
         سطح = سطح + 1;
         document.getElementById("سطح").innerHTML = "سطح: " + سطح;
 
+        // بازه جدید بر اساس سطح
         سقف = سطح * 10;
         عدددرست = Math.floor(Math.random() * سقف) + 1;
         تعدادتلاش = 0;
@@ -196,10 +153,9 @@
         document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
         نتیجه.innerHTML += " برو برای سطح " + سطح + " (عدد بین ۱ تا " + سقف + ")";
 
+        // ذخیره امتیاز و سطح توی حافظه مرورگر
         localStorage.setItem("امتیاز", امتیاز);
         localStorage.setItem("سطح", سطح);
-
-        شروع تایمر();
 
       } else if (حدسکاربر > عدددرست) {
         نتیجه.innerHTML = "⬇️ عددت بزرگه، یه کم کمتر حدس بزن.";
@@ -214,13 +170,10 @@
       }
     }
 
-    // نمایش مقادیر ذخیره‌شده وقتی صفحه باز می‌شه
+    // نمایش امتیاز و سطح ذخیره‌شده وقتی صفحه باز می‌شه
     document.getElementById("امتیاز").innerHTML = "امتیاز: " + امتیاز;
     document.getElementById("سطح").innerHTML = "سطح: " + سطح;
     document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
-
-    // شروع تایمر از همون اول
-    شروع تایمر();
   </script>
 </body>
 </html>
