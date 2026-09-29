@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>بازی حدس عدد</title>
+  <style>
+    body {
+      background-color: #e8f5e9;
+      font-family: Tahoma;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 { color: #2e7d32; }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #2e7d32;
+      border-radius: 8px;
+      width: 100px;
+      text-align: center;
+    }
+    button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    #نتیجه {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #333;
+    }
+    #تلاش {
+      margin-top: 10px;
+      color: #777;
+      font-size: 14px;
+    }
+    #امتیاز {
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #1b5e20;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+      100% { transform: translateX(0); }
+    }
+    .shake {
+      animation: shake 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 بازی حدس عدد</h1>
+  <div id="امتیاز">امتیاز: ۰</div>
+  <p>یه عدد بین ۱ تا ۱۰ حدس بزن:</p>
+  <input type="number" id="حدس" min="1" max="10">
+  <button onclick="بررسی()">حدس بزن!</button>
+  <div id="نتیجه"></div>
+  <div id="تلاش"></div>
+
+  <script>
+    let عدددرست = Math.floor(Math.random() * 10) + 1;
+    let تعدادتلاش = 0;
+    let امتیاز = 0;
+
+    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    function پخشصدا(فرکانس, مدت) {
+      let oscillator = audioContext.createOscillator();
+      let gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = فرکانس;
+      oscillator.type = "sine";
+
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + مدت);
+
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + مدت);
+    }
+
+    function بلرزون() {
+      document.body.classList.add("shake");
+      setTimeout(() => {
+        document.body.classList.remove("shake");
+      }, 300);
+    }
+
+    function بررسی() {
+      let حدسکاربر = document.getElementById("حدس").value;
+      let نتیجه = document.getElementById("نتیجه");
+      let تلاش = document.getElementById("تلاش");
+
+      تعدادتلاش = تعدادتلاش + 1;
+
+      if (حدسکاربر == عدددرست) {
+        let امتیازایندوره = 0;
+
+        if (تعدادتلاش == 1) {
+          امتیازایندوره = 100;
+        } else if (تعدادتلاش == 2) {
+          امتیازایندوره = 70;
+        } else if (تعدادتلاش == 3) {
+          امتیازایندوره = 50;
+        } else {
+          امتیازایندوره = 20;
+        }
+
+        امتیاز = امتیاز + امتیازایندوره;
+        document.getElementById("امتیاز").innerHTML = "امتیاز: " + امتیاز;
+
+        نتیجه.innerHTML = "🎉 آفرین! توی " + تعدادتلاش + " تلاش درست حدس زدی! (+" + امتیازایندوره + " امتیاز)";
+        تلاش.innerHTML = "بازی جدید شروع شد! یه عدد دیگه حدس بزن.";
+
+        پخشصدا(523, 0.15);
+        setTimeout(() => پخشصدا(659, 0.15), 150);
+        setTimeout(() => پخشصدا(784, 0.3), 300);
+
+        عدددرست = Math.floor(Math.random() * 10) + 1;
+        تعدادتلاش = 0;
+      } else if (حدسکاربر > عدددرست) {
+        نتیجه.innerHTML = "⬇️ عددت بزرگه، یه کم کمتر حدس بزن.";
+        تلاش.innerHTML = "تلاش: " + تعدادتلاش;
+        پخشصدا(200, 0.2);
+        بلرزون();
+      } else {
+        نتیجه.innerHTML = "⬆️ عددت کوچیکه، یه کم بیشتر حدس بزن.";
+        تلاش.innerHTML = "تلاش: " + تعدادتلاش;
+        پخشصدا(200, 0.2);
+        بلرزون();
+      }
+    }
+  </script>
+</body>
+</html>
