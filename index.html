@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>بازی حدس عدد</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       background-color: #e8f5e9;
@@ -44,6 +45,11 @@
       font-weight: bold;
       color: #1b5e20;
     }
+    #سطح {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #2e7d32;
+    }
     @keyframes shake {
       0% { transform: translateX(0); }
       25% { transform: translateX(-10px); }
@@ -58,18 +64,26 @@
 </head>
 <body>
   <h1>🎮 بازی حدس عدد</h1>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <div id="امتیاز">امتیاز: ۰</div>
-  <p>یه عدد بین ۱ تا ۱۰ حدس بزن:</p>
+  <div id="سطح">سطح: ۱</div>
+  <p id="راهنما">یه عدد بین ۱ تا ۱۰ حدس بزن:</p>
   <input type="number" id="حدس" min="1" max="10">
   <button onclick="بررسی()">حدس بزن!</button>
   <div id="نتیجه"></div>
   <div id="تلاش"></div>
 
   <script>
-    let عدددرست = Math.floor(Math.random() * 10) + 1;
     let تعدادتلاش = 0;
-    let امتیاز = 0;
+    let سطح = 1;
+
+    // خواندن امتیاز و سطح از حافظه مرورگر
+    let امتیاز = Number(localStorage.getItem("امتیاز")) || 0;
+    let سطحذخیره = Number(localStorage.getItem("سطح")) || 1;
+
+    سطح = سطحذخیره;
+
+    let سقف = سطح * 10;
+    let عدددرست = Math.floor(Math.random() * سقف) + 1;
 
     let audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -127,8 +141,22 @@
         setTimeout(() => پخشصدا(659, 0.15), 150);
         setTimeout(() => پخشصدا(784, 0.3), 300);
 
-        عدددرست = Math.floor(Math.random() * 10) + 1;
+        // سطح بالا می‌ره
+        سطح = سطح + 1;
+        document.getElementById("سطح").innerHTML = "سطح: " + سطح;
+
+        // بازه جدید بر اساس سطح
+        سقف = سطح * 10;
+        عدددرست = Math.floor(Math.random() * سقف) + 1;
         تعدادتلاش = 0;
+
+        document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
+        نتیجه.innerHTML += " برو برای سطح " + سطح + " (عدد بین ۱ تا " + سقف + ")";
+
+        // ذخیره امتیاز و سطح توی حافظه مرورگر
+        localStorage.setItem("امتیاز", امتیاز);
+        localStorage.setItem("سطح", سطح);
+
       } else if (حدسکاربر > عدددرست) {
         نتیجه.innerHTML = "⬇️ عددت بزرگه، یه کم کمتر حدس بزن.";
         تلاش.innerHTML = "تلاش: " + تعدادتلاش;
@@ -141,6 +169,11 @@
         بلرزون();
       }
     }
+
+    // نمایش امتیاز و سطح ذخیره‌شده وقتی صفحه باز می‌شه
+    document.getElementById("امتیاز").innerHTML = "امتیاز: " + امتیاز;
+    document.getElementById("سطح").innerHTML = "سطح: " + سطح;
+    document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
   </script>
 </body>
 </html>
