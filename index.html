@@ -176,16 +176,22 @@
     document.getElementById("سطح").innerHTML = "سطح: " + سطح;
     document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
   function ریستارت() {
+  let تأیید = confirm("مطمئنی می‌خوای از نو شروع کنی؟ همه امتیازات پاک می‌شه!");
+
+  if (تأیید == false) {
+    return;
+  }
+
   // ریست کردن متغیرها
   امتیاز = 0;
   سطح = 1;
   تعدادتلاش = 0;
   سقف = 10;
-  
+
   // پاک کردن حافظه
   localStorage.removeItem("امتیاز");
   localStorage.removeItem("سطح");
-  
+
   // آپدیت صفحه
   document.getElementById("امتیاز").innerHTML = "امتیاز: 0";
   document.getElementById("سطح").innerHTML = "سطح: 1";
@@ -193,7 +199,7 @@
   document.getElementById("نتیجه").innerHTML = "بازی از نو شروع شد! 🎮";
   document.getElementById("تلاش").innerHTML = "";
   document.getElementById("حدس").value = "";
-  
+
   // عدد جدید
   عدددرست = Math.floor(Math.random() * 10) + 1;
 }
