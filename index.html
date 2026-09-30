@@ -71,6 +71,7 @@
   <button onclick="بررسی()">حدس بزن!</button>
   <div id="نتیجه"></div>
   <div id="تلاش"></div>
+  <button onclick="ریستارت()" style="background-color: #c62828;">🔄 ری‌استارت</button>
 
   <script>
     let تعدادتلاش = 0;
@@ -174,6 +175,28 @@
     document.getElementById("امتیاز").innerHTML = "امتیاز: " + امتیاز;
     document.getElementById("سطح").innerHTML = "سطح: " + سطح;
     document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا " + سقف + " حدس بزن:";
-  </script>
+  function ریستارت() {
+  // ریست کردن متغیرها
+  امتیاز = 0;
+  سطح = 1;
+  تعدادتلاش = 0;
+  سقف = 10;
+  
+  // پاک کردن حافظه
+  localStorage.removeItem("امتیاز");
+  localStorage.removeItem("سطح");
+  
+  // آپدیت صفحه
+  document.getElementById("امتیاز").innerHTML = "امتیاز: 0";
+  document.getElementById("سطح").innerHTML = "سطح: 1";
+  document.getElementById("راهنما").innerHTML = "یه عدد بین ۱ تا ۱۰ حدس بزن:";
+  document.getElementById("نتیجه").innerHTML = "بازی از نو شروع شد! 🎮";
+  document.getElementById("تلاش").innerHTML = "";
+  document.getElementById("حدس").value = "";
+  
+  // عدد جدید
+  عدددرست = Math.floor(Math.random() * 10) + 1;
+}
+</script>
 </body>
 </html>
